@@ -18,23 +18,6 @@ enum SQliteError: Error {
 }
 
 final class SQLiteStorage {
-    static func openDatabase(at url: URL) throws -> OpaquePointer {
-        var pointer: OpaquePointer?
-        
-        let result = sqlite3_open_v2(
-            url.path.withCString { $0 },
-            &pointer,
-            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-            UnsafePointer(nil as UnsafePointer<Int>?)
-        )
-        
-        guard result == SQLITE_OK, let pointer = pointer else {
-            throw SQliteError.databaseCantBeOpen
-        }
-        
-        return pointer
-    }
-    
     private let encoder: JSONEncoder = JSONEncoder().do {
         $0.dateEncodingStrategy = .custom { date, encoder in
             var container = encoder.singleValueContainer()
@@ -44,48 +27,24 @@ final class SQLiteStorage {
     
     private let decoder: JSONDecoder = .default
     
-    private var db: OpaquePointer
+    private let client: SQLiteClient
     
     init(folderURL: URL) throws {
-        self.db = try Self.openDatabase(at: folderURL.appendingPathComponent("db.sqlite"))
+        self.client = try SQLiteClient(folderURL: folderURL)
         
         try populateTables()
     }
     
     private func populateTables() throws {
-        try executeStatement("CREATE TABLE IF NOT EXISTS events (event_id BLOB PRIMARY KEY, event_data BLOB);") { executor in
-            try executor.runStep()
-        }
-        try executeStatement("CREATE TABLE IF NOT EXISTS batches (batch_id BLOB PRIMARY KEY, batch_data BLOB);") { executor in
-            try executor.runStep()
-        }
-    }
-    
-    private func executeStatement<T>(_ statementString: String, _ execution: (StatementExecutor) throws -> T = defaultExecution(_:)) throws -> T {
-        var statement: OpaquePointer?
-        
-        guard
-            sqlite3_prepare_v2(db, statementString, -1, &statement, nil) ==
-                SQLITE_OK,
-            let statement = statement
-        else {
-            throw SQliteError.statementPreparationFailed
-        }
-        
-        defer {
-            sqlite3_finalize(statement)
-        }
-        
-        let result = try execution(StatementExecutor(statement: statement))
-        
-        return result
+        try client.executeStatement("CREATE TABLE IF NOT EXISTS events (event_id BLOB PRIMARY KEY, event_data BLOB);")
+        try client.executeStatement("CREATE TABLE IF NOT EXISTS batches (batch_id BLOB PRIMARY KEY, batch_data BLOB);")
     }
 }
 
 extension SQLiteStorage: EventStorage {
     func storeEvent(_ event: Event) {
         let row = RowData(column1: event.insertId.data, column2: try! encoder.encode(event))
-        try? executeStatement("INSERT INTO events (event_id, event_data) VALUES (?, ?)") { executor in
+        try? client.executeStatement("INSERT INTO events (event_id, event_data) VALUES (?, ?)") { executor in
             executor.setRow(row)
             try executor.runStep()
         }
@@ -96,7 +55,7 @@ extension SQLiteStorage: EventStorage {
     }
     
     func loadEvents(_ completion: @escaping ([Event]) -> Void) {
-        let results: [Event]? = try? executeStatement("SELECT event_id, event_data FROM events") { executor in
+        let results: [Event]? = try? client.executeStatement("SELECT event_id, event_data FROM events") { executor in
             var results: [Event] = []
             
             while executor.runQuery(), let row = executor.getRow() {
@@ -112,7 +71,7 @@ extension SQLiteStorage: EventStorage {
     }
     
     private func doRemoveEvent(_ event: Event) throws {
-        try executeStatement("DELETE FROM events WHERE event_id = ?") { executor in
+        try client.executeStatement("DELETE FROM events WHERE event_id = ?") { executor in
             executor.setValue(event.insertId.data)
             try executor.runStep()
         }
@@ -122,7 +81,7 @@ extension SQLiteStorage: EventStorage {
 extension SQLiteStorage: BatchStorage {
     func saveBatch(_ batch: Batch) throws {
         do {
-            try executeStatement("BEGIN TRANSACTION")
+            try client.executeStatement("BEGIN TRANSACTION")
             
             try doSaveBatch(batch)
             
@@ -130,85 +89,29 @@ extension SQLiteStorage: BatchStorage {
                 try doRemoveEvent($0)
             }
             
-            try executeStatement("COMMIT TRANSACTION")
+            try client.executeStatement("COMMIT TRANSACTION")
         } catch {
-            try executeStatement("ROLLBACK TRANSACTION")
+            try client.executeStatement("ROLLBACK TRANSACTION")
             throw error
         }
     }
     
     func loadBatch() throws -> Batch? {
-        try executeStatement("SELECT batch_id, batch_data FROM batches") { executor in
+        try client.executeStatement("SELECT batch_id, batch_data FROM batches") { executor in
             executor.runQuery()
             return try executor.getRow().map { try decoder.decode(Batch.self, from: $0.column2) }
         }
     }
     
     func removeBatch() throws {
-        try executeStatement("DELETE FROM batches WHERE TRUE")
+        try client.executeStatement("DELETE FROM batches WHERE TRUE")
     }
     
     private func doSaveBatch(_ batch: Batch) throws {
         let row = RowData(column1: batch.batchId.data, column2: try encoder.encode(batch))
-        try executeStatement("INSERT INTO batches (batch_id, batch_data) VALUES (?, ?)") { executor in
+        try client.executeStatement("INSERT INTO batches (batch_id, batch_data) VALUES (?, ?)") { executor in
             executor.setRow(row)
             try executor.runStep()
         }
     }
-}
-
-private struct StatementExecutor {
-    let statement: OpaquePointer
-    
-    func runStep() throws {
-        let result = sqlite3_step(statement)
-        guard result == SQLITE_DONE else {
-            throw SQliteError.stepExecutionFailed
-        }
-    }
-    
-    @discardableResult
-    func runQuery() -> Bool {
-        sqlite3_step(statement) == SQLITE_ROW
-    }
-    
-    func setRow(_ row: RowData) {
-        sqlite3_bind_blob(statement, 1, row.column1.withUnsafeBytes { $0.baseAddress }, Int32(row.column1.count), SQLITE_TRANSIENT)
-        sqlite3_bind_blob(statement, 2, row.column2.withUnsafeBytes { $0.baseAddress }, Int32(row.column2.count), SQLITE_TRANSIENT)
-    }
-    
-    func setValue(_ value: Data) {
-        sqlite3_bind_blob(statement, 1, value.withUnsafeBytes { $0.baseAddress }, Int32(value.count), SQLITE_TRANSIENT)
-    }
-    
-    func getRow() -> RowData? {
-        let pointer1 = sqlite3_column_blob(statement, 0)
-        let length1 = sqlite3_column_bytes(statement, 0)
-        
-        let pointer2 = sqlite3_column_blob(statement, 1)
-        let length2 = sqlite3_column_bytes(statement, 1)
-        
-        guard
-            let pointer1 = pointer1,
-            let pointer2 = pointer2
-        else {
-            return nil
-        }
-        
-        let data1 = Data(bytes: pointer1, count: Int(length1))
-        let data2 = Data(bytes: pointer2, count: Int(length2))
-        
-        return RowData(column1: data1, column2: data2)
-    }
-}
-
-private struct RowData {
-    let column1: Data
-    let column2: Data
-}
-
-private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-
-private func defaultExecution(_ executor: StatementExecutor) throws {
-    try executor.runStep()
 }
