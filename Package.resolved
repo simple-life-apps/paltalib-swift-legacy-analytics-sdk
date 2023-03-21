@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "amplitude-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amplitude/Amplitude-iOS.git",
+      "state" : {
+        "revision" : "83b6c60321e0d5a6824e89aa45699c557cca5531",
+        "version" : "8.15.2"
+      }
+    },
+    {
+      "identity" : "analytics-connector-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/amplitude/analytics-connector-ios.git",
+      "state" : {
+        "revision" : "d3d682a26ca6f4947ece2c2e627971bb41b940fa",
+        "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "difference",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/krzysztofzablocki/Difference.git",
+      "state" : {
+        "revision" : "f627d00718033c3d7888acd5f4e3524a843db1cf",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "paltalib-swift-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Palta-Data-Platform/paltalib-swift-core.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "308abe95da783e060162c33f86943f9ed0b17255"
+      }
+    }
+  ],
+  "version" : 2
+}
