@@ -42,8 +42,8 @@ final class SQLiteStorageTests: XCTestCase {
 
         let storage1 = try SQLiteStorage(folderURL: url)
 
-        originalEvents.forEach {
-            storage1.storeEvent($0)
+        try originalEvents.forEach {
+            try storage1.storeEvent($0)
         }
 
         let storage2 = try SQLiteStorage(folderURL: url)
@@ -67,8 +67,8 @@ final class SQLiteStorageTests: XCTestCase {
 
         let storage1 = try SQLiteStorage(folderURL: url)
 
-        originalEvents.forEach {
-            storage1.storeEvent($0)
+        try originalEvents.forEach {
+            try storage1.storeEvent($0)
         }
 
         let removedEvent = originalEvents.randomElement()!
@@ -97,7 +97,7 @@ final class SQLiteStorageTests: XCTestCase {
         let batch = Batch(batchId: UUID(), events: Array(expectedEvents[0...10]), telemetry: .mock())
         
         let storage1 = try SQLiteStorage(folderURL: url)
-        expectedEvents.forEach(storage1.storeEvent(_:))
+        try expectedEvents.forEach(storage1.storeEvent(_:))
         
         try storage1.saveBatch(batch)
         

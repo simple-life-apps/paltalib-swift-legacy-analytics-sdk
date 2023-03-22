@@ -14,9 +14,15 @@ final class EventStorageMock: EventStorage {
     var removedEvents: [Event] = []
 
     var eventsToLoad: [Event] = []
+    
+    var storeError: Error?
 
-    func storeEvent(_ event: Event) {
+    func storeEvent(_ event: Event) throws {
         addedEvents.append(event)
+        
+        if let storeError = storeError {
+            throw storeError
+        }
     }
 
     func removeEvent(_ event: Event) {

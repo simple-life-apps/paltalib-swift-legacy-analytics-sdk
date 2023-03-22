@@ -42,9 +42,9 @@ final class SQLiteStorage {
 }
 
 extension SQLiteStorage: EventStorage {
-    func storeEvent(_ event: Event) {
-        let row = RowData(column1: event.insertId.data, column2: try! encoder.encode(event))
-        try? client.executeStatement("INSERT INTO events (event_id, event_data) VALUES (?, ?)") { executor in
+    func storeEvent(_ event: Event) throws {
+        let row = RowData(column1: event.insertId.data, column2: try encoder.encode(event))
+        try client.executeStatement("INSERT INTO events (event_id, event_data) VALUES (?, ?)") { executor in
             executor.setRow(row)
             try executor.runStep()
         }

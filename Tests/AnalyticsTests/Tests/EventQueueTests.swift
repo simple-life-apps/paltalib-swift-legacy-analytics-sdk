@@ -207,4 +207,16 @@ final class EventQueueTests: XCTestCase {
         
         XCTAssert(coreMock.forceFlushTriggered)
     }
+    
+    func testNonencodableEvent() {
+        storageMock.storeError = NSError(domain: "", code: 0)
+        
+        eventQueue.logEvent(
+            eventType: "Test",
+            eventProperties: ["Not a number": Double.nan],
+            groups: [:]
+        )
+        
+        XCTAssert(coreMock.addedEvents.isEmpty)
+    }
 }

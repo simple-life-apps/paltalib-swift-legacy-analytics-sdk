@@ -113,13 +113,12 @@ final class EventQueueImpl: EventQueue {
             sessionId: sessionId
         )
 
-        storage.storeEvent(event)
-
-//        if liveEventTypes.contains(eventType) {
-//            liveCore.addEvent(event)
-//        } else {
+        do {
+            try storage.storeEvent(event)
             core.addEvent(event)
-//        }
+        } catch {
+            print("PaltaLib: Analytics: Error encoding and saving event of type: \(eventType)")
+        }
     }
     
     private func setupSendController() {

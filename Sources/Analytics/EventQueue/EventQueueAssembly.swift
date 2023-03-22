@@ -51,7 +51,7 @@ final class EventQueueAssembly: FunctionalExtension {
 
 extension EventQueueAssembly {
     convenience init(coreAssembly: CoreAssembly, analyticsCoreAssembly: AnalyticsCoreAssembly) throws {
-        let folderURL = try! FileManager.default.url(
+        let folderURL = try FileManager.default.url(
             for: .libraryDirectory,
             in: .userDomainMask,
             appropriateFor: nil,

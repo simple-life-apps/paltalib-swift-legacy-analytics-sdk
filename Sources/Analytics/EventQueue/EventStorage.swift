@@ -8,7 +8,7 @@
 import Foundation
 
 protocol EventStorage {
-    func storeEvent(_ event: Event)
+    func storeEvent(_ event: Event) throws
     func removeEvent(_ event: Event)
 
     func loadEvents(_ completion: @escaping ([Event]) -> Void)

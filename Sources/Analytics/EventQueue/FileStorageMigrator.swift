@@ -32,7 +32,7 @@ final class FileStorageMigrator {
             do {
                 let data = try Data(contentsOf: url)
                 let event = try decoder.decode(Event.self, from: data)
-                newStorage.storeEvent(event)
+                try newStorage.storeEvent(event)
             } catch {
                 print("Failed to migrate event at \(url.path)")
             }

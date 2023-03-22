@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import PaltaCore
 @testable import PaltaLibAnalytics
 
 extension Event {
     static let mockUUID = UUID()
 
-    static func mock(uuid: UUID = Event.mockUUID, timestamp: Int? = nil) -> Event {
+    static func mock(uuid: UUID = Event.mockUUID, timestamp: Int? = nil, properties: [String: Any] = [:]) -> Event {
         Event(
             eventType: "event",
-            eventProperties: [:],
+            eventProperties: CodableDictionary(properties),
             apiProperties: [:],
             userProperties: [:],
             groups: [:],
