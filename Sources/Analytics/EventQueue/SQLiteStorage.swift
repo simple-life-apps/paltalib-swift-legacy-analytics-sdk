@@ -30,7 +30,7 @@ final class SQLiteStorage {
     private let client: SQLiteClient
     
     init(folderURL: URL) throws {
-        self.client = try SQLiteClient(folderURL: folderURL)
+        self.client = try SQLiteClient(databaseURL: folderURL.appendingPathExtension("db.sqlite"))
         
         try populateTables()
     }

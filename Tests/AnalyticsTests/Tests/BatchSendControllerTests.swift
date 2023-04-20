@@ -7,6 +7,7 @@
 
 import Foundation
 import XCTest
+import PaltaCore
 @testable import PaltaLibAnalytics
 
 final class BatchSendControllerTests: XCTestCase {
@@ -110,7 +111,7 @@ final class BatchSendControllerTests: XCTestCase {
         
         let events = [Event.mock()]
         
-        senderMock.result = .failure(.serializationError(NSError(domain: "", code: 0)))
+        senderMock.result = .failure(.badRequest)
         
         controller.sendBatch(of: events, with: .mock())
         
@@ -129,7 +130,7 @@ final class BatchSendControllerTests: XCTestCase {
         
         let events = [Event.mock()]
         
-        senderMock.result = .failure(.serverError)
+        senderMock.result = .failure(.serverError(500))
         
         controller.sendBatch(of: events, with: .mock())
         
@@ -207,7 +208,7 @@ final class BatchSendControllerTests: XCTestCase {
         
         let events = [Event.mock()]
         
-        senderMock.result = .failure(.networkError(URLError(.cannotConnectToHost)))
+        senderMock.result = .failure(.otherNetworkError(.cannotCreateFile))
         
         controller.sendBatch(of: events, with: .mock())
         
@@ -247,38 +248,6 @@ final class BatchSendControllerTests: XCTestCase {
         wait(for: [isReadyCalled], timeout: 0.1)
 
         XCTAssertNotNil(storageMock.savedBatch)
-        XCTAssert(storageMock.batchRemoved)
-        XCTAssert(controller.isReady)
-    }
-    
-    func testMaxRetry() {
-        controller.configurationFinished()
-
-        let isReadyCalled = expectation(description: "Is Ready called")
-        controller.isReadyCallback = isReadyCalled.fulfill
-        
-        var retryCount = 0
-        
-        let events = [Event.mock()]
-        
-        senderMock.result = .failure(.notConfigured)
-        
-        controller.sendBatch(of: events, with: .mock())
-        
-        repeat {
-            timerMock.passedInterval = nil
-            timerMock.fireAndWait()
-            retryCount += 1
-            
-            if retryCount > 10 {
-                XCTAssert(false)
-            }
-        } while timerMock.passedInterval != nil
-        
-        XCTAssertEqual(retryCount, 10)
-        
-        wait(for: [isReadyCalled], timeout: 0.1)
-        
         XCTAssert(storageMock.batchRemoved)
         XCTAssert(controller.isReady)
     }
@@ -323,5 +292,80 @@ final class BatchSendControllerTests: XCTestCase {
         XCTAssertNil(senderMock.batch)
         XCTAssertFalse(storageMock.batchRemoved)
         XCTAssertFalse(controller.isReady)
+    }
+    
+    func testMaxRetryOnNoInternet() {
+        checkRetryLimit(for: .noInternet, shouldLimit: false)
+    }
+    
+    func testMaxRetryOnTimeout() {
+        checkRetryLimit(for: .timeout, shouldLimit: true)
+    }
+    
+    func testMaxRetryOnDNS() {
+        checkRetryLimit(for: .dnsError(.unknown), shouldLimit: true)
+    }
+    
+    func testMaxRetryOnSSL() {
+        checkRetryLimit(for: .sslError(.unknown), shouldLimit: true)
+    }
+    
+    func testMaxRetryOnRequiresHttps() {
+        checkRetryLimit(for: .requiresHttps, shouldLimit: false)
+    }
+
+    func testMaxRetryOnCantConnectHost() {
+        checkRetryLimit(for: .cantConnectToHost, shouldLimit: false)
+    }
+
+    func testMaxRetryOnBadResponse() {
+        checkRetryLimit(for: .badResponse, shouldLimit: true)
+    }
+
+    func testMaxRetryOnServerError() {
+        checkRetryLimit(for: .serverError(500), shouldLimit: true)
+    }
+    
+    func testMaxRetryOnConfigMissing() {
+        checkRetryLimit(for: .notConfigured, shouldLimit: false)
+    }
+    
+    private func checkRetryLimit(for error: CategorisedNetworkError, shouldLimit: Bool, line: UInt = #line, file: StaticString = #file) {
+        controller.configurationFinished()
+
+        let isReadyCalled = expectation(description: "Is Ready called")
+        isReadyCalled.isInverted = !shouldLimit
+        controller.isReadyCallback = isReadyCalled.fulfill
+        
+        var retryCount = 0
+        
+        let events = [Event.mock()]
+        
+        senderMock.result = .failure(error)
+        
+        controller.sendBatch(of: events, with: .mock())
+        
+        repeat {
+            timerMock.passedInterval = nil
+            timerMock.fireAndWait()
+            retryCount += 1
+            
+            if retryCount > 10 {
+                XCTAssert(!shouldLimit, file: file, line: line)
+                break
+            }
+        } while timerMock.passedInterval != nil
+        
+        XCTAssertEqual(retryCount, shouldLimit ? 10 : 11, file: file, line: line)
+        
+        wait(for: [isReadyCalled], timeout: 0.1)
+        
+        if shouldLimit {
+            XCTAssert(storageMock.batchRemoved)
+            XCTAssert(controller.isReady)
+        } else {
+            XCTAssertFalse(storageMock.batchRemoved)
+            XCTAssertFalse(controller.isReady)
+        }
     }
 }

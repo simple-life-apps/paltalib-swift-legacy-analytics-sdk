@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PaltaCore
 
 protocol BatchSendController: AnyObject {
     var isReady: Bool { get }
@@ -87,20 +88,23 @@ final class BatchSendControllerImpl: BatchSendController {
         lock.unlock()
     }
     
-    private func handle(_ error: BatchSendError, for batch: Batch, retryCount: Int) {
+    private func handle(_ error: CategorisedNetworkError, for batch: Batch, retryCount: Int) {
         switch error {
-        case .notConfigured:
+        case .notConfigured, .requiresHttps:
             print("PaltaLib: Analytics: Batch send failed due to SDK misconfiguration")
-            scheduleBatchSend(batch, retryCount: retryCount + 1)
+            scheduleBatchSend(batch, retryCount: retryCount + 1, cancelAllowed: false)
             
-        case .serializationError:
+        case .badRequest:
             print("PaltaLib: Analytics: Batch send failed due to serialization error")
             completeBatchSend()
             
-        case .networkError,.serverError, .noInternet, .timeout:
-            scheduleBatchSend(batch, retryCount: retryCount + 1)
+        case .serverError, .dnsError, .sslError, .otherNetworkError, .decodingError, .badResponse, .timeout:
+            scheduleBatchSend(batch, retryCount: retryCount + 1, cancelAllowed: true)
             
-        case .unknown:
+        case .noInternet, .cantConnectToHost:
+            scheduleBatchSend(batch, retryCount: retryCount + 1, cancelAllowed: false)
+            
+        case .unknown, .unauthorised, .clientError:
             print("PaltaLib: Analytics: Batch send failed due to unknown error")
             completeBatchSend()
         }
@@ -118,8 +122,8 @@ final class BatchSendControllerImpl: BatchSendController {
         }
     }
     
-    private func scheduleBatchSend(_ batch: Batch, retryCount: Int) {
-        guard retryCount <= 10 else {
+    private func scheduleBatchSend(_ batch: Batch, retryCount: Int, cancelAllowed: Bool) {
+        guard retryCount <= 10 || !cancelAllowed else {
             completeBatchSend()
             return
         }

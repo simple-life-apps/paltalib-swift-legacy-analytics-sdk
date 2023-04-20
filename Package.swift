@@ -20,7 +20,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/Palta-Data-Platform/paltalib-swift-core.git",
-            branch: "main"
+            from: "3.1.1"
         ),
         .package(
             url: "https://github.com/krzysztofzablocki/Difference.git",
