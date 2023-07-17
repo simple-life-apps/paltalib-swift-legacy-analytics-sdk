@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Palta-Data-Platform/paltalib-swift-core.git",
       "state" : {
-        "revision" : "7e6f51e20f9406e65c2422849e33fbc747211817",
-        "version" : "3.1.1"
+        "revision" : "dfecba968badba929d2c47394de7c7286b6fcdbe",
+        "version" : "3.2.2"
       }
     }
   ],

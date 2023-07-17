@@ -58,7 +58,7 @@ extension SQLiteStorage: EventStorage {
         let results: [Event]? = try? client.executeStatement("SELECT event_id, event_data FROM events") { executor in
             var results: [Event] = []
             
-            while executor.runQuery(), let row = executor.getRow() {
+            while executor.runQuery(), let row: RowData = executor.getRow() {
                 if let event = try? decoder.decode(Event.self, from: row.column2) {
                     results.append(event)
                 }
@@ -99,7 +99,9 @@ extension SQLiteStorage: BatchStorage {
     func loadBatch() throws -> Batch? {
         try client.executeStatement("SELECT batch_id, batch_data FROM batches") { executor in
             executor.runQuery()
-            return try executor.getRow().map { try decoder.decode(Batch.self, from: $0.column2) }
+            return try executor.getRow().map { (data: RowData) in
+                try decoder.decode(Batch.self, from: data.column2)
+            }
         }
     }
     
