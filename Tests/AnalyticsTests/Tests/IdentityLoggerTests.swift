@@ -23,7 +23,7 @@ final class IdentityLoggerTests: XCTestCase {
     func testInSessionIdentify() {
         let identify = AMPIdentify().add("prop", value: "value" as NSString)!
 
-        logger.identify(identify, outOfSession: false)
+        logger.identify(identify)
 
         XCTAssertEqual(eventQueueMock.eventType, "$identify")
         XCTAssertEqual(eventQueueMock.eventProperties?.isEmpty, true)
@@ -32,13 +32,12 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.userProperties as? [String: [String: String]], ["$add": ["prop": "value"]])
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testOutOfSessionIdentify() {
         let identify = AMPIdentify().add("prop", value: "value" as NSString)!
 
-        logger.identify(identify, outOfSession: true)
+        logger.identify(identify)
 
         XCTAssertEqual(eventQueueMock.eventType, "$identify")
         XCTAssertEqual(eventQueueMock.eventProperties?.isEmpty, true)
@@ -47,15 +46,6 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.userProperties as? [String: [String: String]], ["$add": ["prop": "value"]])
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, true)
-    }
-
-    func testDefaultSessionIdentify() {
-        let identify = AMPIdentify().add("prop", value: "value" as NSString)!
-
-        logger.identify(identify)
-
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testInSessionGroupIdentify() {
@@ -64,8 +54,7 @@ final class IdentityLoggerTests: XCTestCase {
         logger.groupIdentify(
             groupType: "groupType",
             groupName: "groupName" as NSString,
-            groupIdentify: identify,
-            outOfSession: false
+            groupIdentify: identify
         )
 
         XCTAssertEqual(eventQueueMock.eventType, "$groupidentify")
@@ -75,7 +64,6 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.groupProperties as? [String: [String: String]], ["$add": ["prop": "value"]])
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testOutOfSessionGroupIdentify() {
@@ -84,8 +72,7 @@ final class IdentityLoggerTests: XCTestCase {
         logger.groupIdentify(
             groupType: "groupType",
             groupName: "groupName" as NSString,
-            groupIdentify: identify,
-            outOfSession: true
+            groupIdentify: identify
         )
 
         XCTAssertEqual(eventQueueMock.eventType, "$groupidentify")
@@ -95,7 +82,6 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.groupProperties as? [String: [String: String]], ["$add": ["prop": "value"]])
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, true)
     }
 
     func testClearProperties() {
@@ -108,7 +94,6 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.groupProperties?.isEmpty, true)
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testSetUserProperties() {
@@ -129,7 +114,6 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.groupProperties?.isEmpty, true)
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testSetGroup() {
@@ -145,6 +129,5 @@ final class IdentityLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?.isEmpty, true)
         XCTAssertEqual(eventQueueMock.groupProperties?.isEmpty, true)
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 }

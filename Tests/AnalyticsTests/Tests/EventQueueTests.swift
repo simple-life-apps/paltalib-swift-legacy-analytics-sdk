@@ -71,24 +71,6 @@ final class EventQueueTests: XCTestCase {
         XCTAssert(liveCoreMock.addedEvents.isEmpty)
     }
 
-    func testAddOutOfSessionEvent() {
-        eventQueue.logEvent(
-            eventType: "event-type",
-            eventProperties: ["prop": "1"],
-            groups: ["group": 2],
-            timestamp: 22,
-            outOfSession: true
-        )
-
-        XCTAssertEqual(composerMock.sessionId, -1)
-
-        XCTAssertEqual(coreMock.addedEvents, [.mock()])
-        XCTAssertEqual(storageMock.addedEvents, [.mock()])
-        XCTAssertNil(timerMock.passedInterval)
-        XCTAssertFalse(sessionManagerMock.refreshSessionCalled)
-        XCTAssert(liveCoreMock.addedEvents.isEmpty)
-    }
-
     func testInit() {
         storageMock.eventsToLoad = Array(repeating: .mock(), count: 30)
 

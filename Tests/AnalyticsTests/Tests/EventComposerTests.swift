@@ -518,23 +518,6 @@ final class EventComposerTests: XCTestCase {
         XCTAssertNotNil(event.idfa)
     }
 
-    func testOutOfSession() {
-        sessionManagerMock.sessionId = 89
-
-        let event = composer.composeEvent(
-            eventType: "someType",
-            eventProperties: [:],
-            apiProperties: [:],
-            groups: [:],
-            userProperties: [:],
-            groupProperties: [:],
-            timestamp: nil,
-            sessionId: -1
-        )
-
-        XCTAssertEqual(event.sessionId, -1)
-    }
-
     func testIncrementSequenceNumber() {
         let event1 = composer.composeEvent(
             eventType: "someType",

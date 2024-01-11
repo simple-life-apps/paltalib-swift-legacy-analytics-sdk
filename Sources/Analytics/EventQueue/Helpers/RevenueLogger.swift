@@ -31,8 +31,7 @@ final class RevenueLogger {
             groups: [:],
             userProperties: [:],
             groupProperties: [:],
-            timestamp: nil,
-            outOfSession: false
+            timestamp: nil
         )
     }
 
@@ -53,8 +52,7 @@ final class RevenueLogger {
             groups: [:],
             userProperties: [:],
             groupProperties: [:],
-            timestamp: nil,
-            outOfSession: false
+            timestamp: nil
         )
     }
 }

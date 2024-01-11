@@ -19,8 +19,7 @@ final class IdentityLogger {
     }
 
     func identify(
-        _ identify: AMPIdentify,
-        outOfSession: Bool = false
+        _ identify: AMPIdentify
     ) {
         guard let userProperties = identify.userPropertyOperations as? [String: Any] else {
             assertionFailure()
@@ -34,16 +33,14 @@ final class IdentityLogger {
             groups: [:],
             userProperties: userProperties,
             groupProperties: [:],
-            timestamp: nil,
-            outOfSession: outOfSession
+            timestamp: nil
         )
     }
 
     func groupIdentify(
         groupType: String,
         groupName: NSObject,
-        groupIdentify: AMPIdentify,
-        outOfSession: Bool
+        groupIdentify: AMPIdentify
     ) {
         guard
             let groupProperties = groupIdentify.userPropertyOperations as? [String: Any],
@@ -60,8 +57,7 @@ final class IdentityLogger {
             groups: [groupType: groupName],
             userProperties: [:],
             groupProperties: groupProperties,
-            timestamp: nil,
-            outOfSession: outOfSession
+            timestamp: nil
         )
     }
 
@@ -94,8 +90,7 @@ final class IdentityLogger {
             groups: [groupType: groupName],
             userProperties: userProperties,
             groupProperties: [:],
-            timestamp: nil,
-            outOfSession: false
+            timestamp: nil
         )
     }
 }

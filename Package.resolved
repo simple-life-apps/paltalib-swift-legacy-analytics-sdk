@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/amplitude/Amplitude-iOS.git",
       "state" : {
-        "revision" : "83b6c60321e0d5a6824e89aa45699c557cca5531",
-        "version" : "8.15.2"
+        "revision" : "dca2c744336e651ee285011282b86accc2ce3704",
+        "version" : "8.17.2"
       }
     },
     {

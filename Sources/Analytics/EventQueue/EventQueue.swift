@@ -15,8 +15,7 @@ protocol EventQueue {
         groups: [String: Any],
         userProperties: [String: Any],
         groupProperties: [String: Any],
-        timestamp: Int?,
-        outOfSession: Bool
+        timestamp: Int?
     )
 }
 
@@ -67,8 +66,7 @@ final class EventQueueImpl: EventQueue {
         groups: [String: Any],
         userProperties: [String: Any] = [:],
         groupProperties: [String: Any] = [:],
-        timestamp: Int? = nil,
-        outOfSession: Bool = false
+        timestamp: Int? = nil
     ) {
         doLogEvent(
             eventType: eventType,
@@ -78,8 +76,7 @@ final class EventQueueImpl: EventQueue {
             userProperties: userProperties,
             groupProperties: groupProperties,
             timestamp: timestamp,
-            sessionId: outOfSession ? -1 : nil,
-            outOfSession: outOfSession
+            sessionId: nil
         )
     }
 
@@ -91,16 +88,13 @@ final class EventQueueImpl: EventQueue {
         userProperties: [String: Any],
         groupProperties: [String: Any],
         timestamp: Int?,
-        sessionId: Int?,
-        outOfSession: Bool
+        sessionId: Int?
     ) {
         guard !excludedEvents.contains(eventType) else {
             return
         }
         
-        if !outOfSession {
-            sessionManager.refreshSession(with: timestamp ?? .currentTimestamp())
-        }
+        sessionManager.refreshSession(with: timestamp ?? .currentTimestamp())
 
         let event = eventComposer.composeEvent(
             eventType: eventType,
@@ -168,8 +162,7 @@ final class EventQueueImpl: EventQueue {
                 userProperties: [:],
                 groupProperties: [:],
                 timestamp: timestamp,
-                sessionId: timestamp,
-                outOfSession: true
+                sessionId: timestamp
             )
         }
 

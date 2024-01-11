@@ -22,34 +22,30 @@ extension PaltaAnalytics {
     }
 
     public func identify(
-        _ identify: AMPIdentify,
-        outOfSession: Bool = false
+        _ identify: AMPIdentify
     ) {
         amplitudeInstances.forEach {
             $0.identify(
-                identify,
-                outOfSession: outOfSession
+                identify
             )
         }
 
         paltaQueueAssemblies.forEach {
-            $0.identityLogger.identify(identify, outOfSession: outOfSession)
+            $0.identityLogger.identify(identify)
         }
     }
 
     public func groupIdentify(
         withGroupType groupType: String,
         groupName: NSObject,
-        groupIdentify: AMPIdentify,
-        outOfSession: Bool = false
+        groupIdentify: AMPIdentify
     ) {
 
         amplitudeInstances.forEach {
             $0.groupIdentify(
                 withGroupType: groupType,
                 groupName: groupName,
-                groupIdentify: groupIdentify,
-                outOfSession: outOfSession
+                groupIdentify: groupIdentify
             )
         }
 
@@ -57,8 +53,7 @@ extension PaltaAnalytics {
             $0.identityLogger.groupIdentify(
                 groupType: groupType,
                 groupName: groupName,
-                groupIdentify: groupIdentify,
-                outOfSession: outOfSession
+                groupIdentify: groupIdentify
             )
         }
     }
@@ -96,31 +91,6 @@ extension PaltaAnalytics {
         paltaQueueAssemblies.forEach {
             $0.identityLogger.setGroup(groupType: groupType, groupName: groupName)
         }
-    }
-
-    @available(*, deprecated, message: "Use groupIdentify(withGroupType:groupName:groupIdentify:outOfSession:) instead")
-    public func groupIdentifyWithGroupType(_ groupType: String,
-                                           groupName: NSObject,
-                                           groupIdentify: AMPIdentify) {
-        self.groupIdentify(
-            withGroupType: groupType,
-            groupName: groupName,
-            groupIdentify: groupIdentify,
-            outOfSession: false
-        )
-    }
-
-    @available(*, deprecated, message: "Use groupIdentify(withGroupType:groupName:groupIdentify:outOfSession:) instead")
-    public func groupIdentifyWithGroupType(_ groupType: String,
-                                           groupName: NSObject,
-                                           groupIdentify: AMPIdentify,
-                                           outOfSession: Bool) {
-        self.groupIdentify(
-            withGroupType: groupType,
-            groupName: groupName,
-            groupIdentify: groupIdentify,
-            outOfSession: outOfSession
-        )
     }
 
     public func setDeviceId(_ deviceId: String) {

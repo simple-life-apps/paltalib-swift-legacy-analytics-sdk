@@ -24,8 +24,7 @@ extension Amplitude {
         eventType: String,
         eventProperties: [AnyHashable: Any]? = nil,
         groups: [AnyHashable: Any]? = nil,
-        timestamp: NSNumber? = nil,
-        outOfSession: Bool = false
+        timestamp: NSNumber? = nil
     ) {
         guard !excludedEvents.contains(eventType) else {
             return
@@ -37,14 +36,13 @@ extension Amplitude {
                 withEventProperties: eventProperties,
                 withGroups: groups,
                 withTimestamp: timestamp,
-                outOfSession: outOfSession
+                outOfSession: false
             )
         } else {
             logEvent(
                 eventType,
                 withEventProperties: eventProperties,
-                withGroups: groups,
-                outOfSession: outOfSession
+                withGroups: groups
             )
         }
     }

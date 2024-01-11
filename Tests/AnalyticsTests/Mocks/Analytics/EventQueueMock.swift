@@ -16,7 +16,6 @@ final class EventQueueMock: EventQueue {
     var userProperties: [String : Any]?
     var groupProperties: [String : Any]?
     var timestamp: Int?
-    var outOfSession: Bool?
 
     func logEvent(
         eventType: String,
@@ -25,8 +24,7 @@ final class EventQueueMock: EventQueue {
         groups: [String: Any],
         userProperties: [String : Any],
         groupProperties: [String: Any],
-        timestamp: Int?,
-        outOfSession: Bool
+        timestamp: Int?
     ) {
         self.eventType = eventType
         self.eventProperties = eventProperties
@@ -35,7 +33,6 @@ final class EventQueueMock: EventQueue {
         self.userProperties = userProperties
         self.groupProperties = groupProperties
         self.timestamp = timestamp
-        self.outOfSession = outOfSession
     }
 
 

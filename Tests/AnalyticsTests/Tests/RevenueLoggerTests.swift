@@ -41,7 +41,6 @@ final class RevenueLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.apiProperties?["receipt"] as? String, "BAQEBAQEBAQEBAQEBAQEBA==")
 
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testLogRevenueWithNils() {
@@ -65,7 +64,6 @@ final class RevenueLoggerTests: XCTestCase {
         XCTAssertNil(eventQueueMock.apiProperties?["productId"])
 
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testRevenueV2() {
@@ -90,7 +88,6 @@ final class RevenueLoggerTests: XCTestCase {
         XCTAssertEqual(eventQueueMock.eventProperties?["$productId"] as? String, "product")
 
         XCTAssertNil(eventQueueMock.timestamp)
-        XCTAssertEqual(eventQueueMock.outOfSession, false)
     }
 
     func testRevenueV2Invalid() {
