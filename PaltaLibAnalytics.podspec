@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name                  = 'PaltaLibAnalytics'
-  spec.version               = "99.99.90"
+  spec.version               = "2.6.0"
   spec.license               = 'MIT'
   spec.summary               = 'PaltaLib iOS SDK - Analytics'
   spec.homepage              = 'https://github.com/Palta-Data-Platform/paltalib-swift-legacy-analytics-sdk'
