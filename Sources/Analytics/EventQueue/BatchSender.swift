@@ -33,6 +33,11 @@ final class BatchSenderImpl: BatchSender {
             return
         }
         
+        guard !batch.events.isEmpty else {
+            completion(.success(()))
+            return
+        }
+        
         let errorHandler = ErrorHandler(completion: completion)
 
         let request = AnalyticsHTTPRequest.sendEvents(
