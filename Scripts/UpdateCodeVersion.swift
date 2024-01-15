@@ -49,7 +49,7 @@ func updatePodspec(_ name: String) throws {
 
 func patchPodVersionLine(_ line: String) -> String {
     let entry = line.components(separatedBy: "=")[0]
-    return "\(entry)= \"\(CommandLine.arguments[1])\""
+    return "\(entry)= \'\(CommandLine.arguments[1])\'"
 }
 
 func commitChanges() throws {
