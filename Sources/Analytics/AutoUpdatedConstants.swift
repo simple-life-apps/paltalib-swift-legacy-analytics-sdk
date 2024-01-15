@@ -1,8 +1,1 @@
-//
-//  File.swift
-//  
-//
-//  Created by Vyacheslav Beltyukov on 15/01/2024.
-//
-
-import Foundation
+let global_sdkVersion = "99.99.90"
