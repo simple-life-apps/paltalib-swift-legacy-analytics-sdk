@@ -1,0 +1,42 @@
+name: Finish release
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        type: string
+        required: true
+  repository_dispatch:
+    types: [finish_release]
+jobs:
+  create_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: "release/${{ inputs.versionName || github.event.client_payload.version }}"
+      - name: Set tag
+        run: |
+          git tag ${{ inputs.versionName || github.event.client_payload.version }}
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: "release/${{ inputs.versionName || github.event.client_payload.version }}"
+          tags: true
+  publish_cocoapods:
+    uses: ./.github/workflows/pods.yaml
+    secrets: inherit
+    needs: create_tag
+    with:
+      branch: "release/${{ inputs.versionName || github.event.client_payload.version }}"
+  merge_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: "release/${{ inputs.versionName || github.event.client_payload.version }}"
+      - name: Merge to main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
