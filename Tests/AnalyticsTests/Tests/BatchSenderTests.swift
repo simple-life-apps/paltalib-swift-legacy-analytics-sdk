@@ -121,7 +121,7 @@ final class BatchSenderTests: XCTestCase {
         httpMock.result = .failure(NetworkErrorWithoutResponse.invalidStatusCode(401, nil))
         
         sender.sendBatch(batch) { result in
-            guard case .failure(let error) = result, case .unknown = error else {
+            guard case .failure(let error) = result, case .unauthorised = error else {
                 return
             }
             
