@@ -30,7 +30,7 @@
     {
       "identity" : "paltalib-swift-core",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:simple-life-app/paltalib-swift-core.git",
+      "location" : "https://github.com/simple-life-apps/paltalib-swift-core.git",
       "state" : {
         "revision" : "dfecba968badba929d2c47394de7c7286b6fcdbe",
         "version" : "3.2.2"

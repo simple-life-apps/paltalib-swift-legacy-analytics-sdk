@@ -19,7 +19,7 @@ let package = Package(
             from: "8.16.4"
         ),
         .package(
-            url: "git@github.com:simple-life-app/paltalib-swift-core.git",
+            url: "https://github.com/simple-life-apps/paltalib-swift-core.git",
             from: "3.2.2"
         ),
         .package(
