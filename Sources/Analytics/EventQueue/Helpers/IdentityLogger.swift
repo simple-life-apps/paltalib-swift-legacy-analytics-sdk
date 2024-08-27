@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Amplitude
 
 final class IdentityLogger {
     private let identifyEventType = "$identify"
@@ -17,14 +16,7 @@ final class IdentityLogger {
         self.eventQueue = eventQueue
     }
 
-    func identify(
-        _ identify: AMPIdentify
-    ) {
-        guard let userProperties = identify.userPropertyOperations as? [String: Any] else {
-            assertionFailure()
-            return
-        }
-
+    func setUserProperties(_ userProperties: [String: Any]) {
         eventQueue.logEvent(
             eventType: identifyEventType,
             eventProperties: [:],
@@ -34,15 +26,5 @@ final class IdentityLogger {
             groupProperties: [:],
             timestamp: nil
         )
-    }
-
-    func setUserProperties(_ userProperties: [String: Any]) {
-        let identifyObject = AMPIdentify()
-
-        userProperties.forEach {
-            identifyObject.set($0.key, value: $0.value as? NSObject)
-        }
-
-        identify(identifyObject)
     }
 }

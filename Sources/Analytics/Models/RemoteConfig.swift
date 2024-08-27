@@ -2,7 +2,7 @@ import Foundation
 
 struct RemoteConfig: Codable, Equatable {
     static let `default` = RemoteConfig(
-        targets: [.defaultAmplitude, .defaultPaltaBrain]
+        targets: [.defaultPaltaBrain]
     )
 
     let targets: [ConfigTarget]
@@ -10,25 +10,9 @@ struct RemoteConfig: Codable, Equatable {
 
 struct ConfigTarget: Codable, Equatable {
     enum Name: String, Codable {
-        case amplitude
         case paltabrain
     }
-    
-    static let defaultAmplitude = ConfigTarget(
-        name: .amplitude,
-        settings: ConfigSettings(
-            eventUploadThreshold: 30,
-            eventUploadMaxBatchSize: 100,
-            eventMaxCount: 1000,
-            eventUploadPeriodSeconds: 30,
-            minTimeBetweenSessionsMillis: 300000,
-            trackingSessionEvents: true,
-            realtimeEventTypes: [],
-            excludedEventTypes: [],
-            sendMechanism: .amplitude
-        )
-    )
-    
+
     static let defaultPaltaBrain = ConfigTarget(
         name: .paltabrain,
         settings: ConfigSettings(
@@ -50,7 +34,6 @@ struct ConfigTarget: Codable, Equatable {
 
 struct ConfigSettings: Codable, Equatable {
     enum SendMechanism: String, Codable {
-        case amplitude
         case paltaBrain = "paltabrain"
     }
     

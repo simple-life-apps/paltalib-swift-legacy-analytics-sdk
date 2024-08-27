@@ -7,7 +7,8 @@
 
 import Foundation
 import UIKit
-import Amplitude
+
+private let kAMPSessionStartEvent = "session_start"
 
 protocol SessionIdProvider {
     var sessionId: Int { get }

@@ -18,32 +18,15 @@ public final class PaltaAnalytics {
             return _paltaQueueAssemblies
         }
     }
-    
-    var amplitudeInstances: [Amplitude] {
-        if let defaultAmplitudeInstance = defaultAmplitudeInstance {
-            return [defaultAmplitudeInstance]
-        } else {
-            return _amplitudeInstances
-        }
-    }
-    
+
     private let lock = NSRecursiveLock()
 
-    private var defaultAmplitudeInstance: Amplitude? = Amplitude
-        .instance(withName: ConfigTarget.defaultAmplitude.name.rawValue)
-        .do {
-            $0.apply(.defaultAmplitude, host: nil)
-            $0.setOffline(true)
-        }
-    
     private var defaultPaltaInstance: EventQueueAssembly?
     
     private var _paltaQueueAssemblies: [EventQueueAssembly] = []
-    private var _amplitudeInstances: [Amplitude] = []
 
     private var isConfigured = false
     private var apiKey: String?
-    private var amplitudeApiKey: String?
     private var host: URL?
     
     init() {
@@ -56,7 +39,6 @@ public final class PaltaAnalytics {
     }
 
     public func configure(
-        amplitudeAPIKey: String? = nil,
         paltaAPIKey: String? = nil,
         host: URL?
     ) {
@@ -67,12 +49,7 @@ public final class PaltaAnalytics {
         
         self.isConfigured = true
         self.apiKey = paltaAPIKey
-        self.amplitudeApiKey = amplitudeAPIKey
         self.host = host
-
-        if let amplitudeAPIKey = amplitudeAPIKey {
-            defaultAmplitudeInstance?.initializeApiKey(amplitudeAPIKey)
-        }
 
         requestRemoteConfigs()
     }
@@ -100,26 +77,19 @@ public final class PaltaAnalytics {
         let service = ConfigApplyService(
             remoteConfig: remoteConfig,
             apiKey: apiKey,
-            amplitudeApiKey: amplitudeApiKey,
             eventQueueAssemblyProvider: assembly,
             host: host
         )
         
         service.apply(
             defaultPaltaAssembly: &defaultPaltaInstance,
-            defaultAmplitude: &defaultAmplitudeInstance,
-            paltaAssemblies: &_paltaQueueAssemblies,
-            amplitudeInstances: &_amplitudeInstances
+            paltaAssemblies: &_paltaQueueAssemblies
         )
         
         lock.unlock()
     }
 
     public func setTrackingOptions(_ options: AMPTrackingOptions) {
-        amplitudeInstances.forEach {
-            $0.setTrackingOptions(options)
-        }
-
         assembly.analyticsCoreAssembly.trackingOptionsProvider.setTrackingOptions(options)
     }
 }
