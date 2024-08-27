@@ -8,8 +8,6 @@
 import Foundation
 import UIKit
 
-private let kAMPSessionStartEvent = "session_start"
-
 protocol SessionIdProvider {
     var sessionId: Int { get }
 }

@@ -7,7 +7,6 @@
 
 import Foundation
 import PaltaCore
-import Amplitude
 
 protocol EventComposer {
     func composeEvent(

@@ -15,10 +15,6 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/amplitude/Amplitude-iOS.git",
-            from: "8.16.4"
-        ),
-        .package(
             url: "https://github.com/simple-life-apps/paltalib-swift-core.git",
             from: "3.2.2"
         ),
@@ -31,7 +27,6 @@ let package = Package(
         .target(
             name: "PaltaLibAnalytics",
             dependencies: [
-                .product(name: "Amplitude", package: "Amplitude-iOS"),
                 .product(name: "PaltaCore", package: "paltalib-swift-core")
             ],
             path: "Sources/Analytics"
