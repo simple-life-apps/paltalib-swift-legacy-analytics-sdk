@@ -22,8 +22,7 @@ final class EventQueueAssembly: FunctionalExtension {
     let eventQueue: EventQueueImpl
     
     let identityLogger: IdentityLogger
-    let revenueLogger: RevenueLogger
-    
+
     private init(
         sessionManager: SessionManagerImpl,
         eventQueueCore: EventQueueCoreImpl,
@@ -33,8 +32,7 @@ final class EventQueueAssembly: FunctionalExtension {
         batchSender: BatchSenderImpl,
         batchSendController: BatchSendControllerImpl,
         eventQueue: EventQueueImpl,
-        identityLogger: IdentityLogger,
-        revenueLogger: RevenueLogger
+        identityLogger: IdentityLogger
     ) {
         self.sessionManager = sessionManager
         self.eventQueueCore = eventQueueCore
@@ -45,7 +43,6 @@ final class EventQueueAssembly: FunctionalExtension {
         self.batchSendController = batchSendController
         self.eventQueue = eventQueue
         self.identityLogger = identityLogger
-        self.revenueLogger = revenueLogger
     }
 }
 
@@ -112,8 +109,6 @@ extension EventQueueAssembly {
 
         let identityLogger = IdentityLogger(eventQueue: eventQueue)
 
-        let revenueLogger = RevenueLogger(eventQueue: eventQueue)
-        
         self.init(
             sessionManager: analyticsCoreAssembly.sessionManager,
             eventQueueCore: eventQueueCore,
@@ -123,8 +118,7 @@ extension EventQueueAssembly {
             batchSender: batchSender,
             batchSendController: batchSendController,
             eventQueue: eventQueue,
-            identityLogger: identityLogger,
-            revenueLogger: revenueLogger
+            identityLogger: identityLogger
         )
     }
 }

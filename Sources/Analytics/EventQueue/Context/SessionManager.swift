@@ -18,7 +18,6 @@ protocol SessionManager: AnyObject {
 
     func refreshSession(with timestamp: Int)
     func start()
-    func startNewSession()
 }
 
 final class SessionManagerImpl: SessionManager, SessionIdProvider {
@@ -97,22 +96,6 @@ final class SessionManagerImpl: SessionManager, SessionIdProvider {
         }
     }
     
-    func startNewSession() {
-        lock.lock()
-        sessionEventLogger?(kAMPSessionEndEvent, session.lastEventTimestamp)
-        let timestamp = Int.currentTimestamp()
-        let session = Session(id: timestamp)
-        self.session = session
-        sessionEventLogger?(kAMPSessionStartEvent, timestamp)
-        lock.unlock()
-    }
-
-    func setSessionId(_ sessionId: Int) {
-        lock.lock()
-        session = Session(id: sessionId)
-        lock.unlock()
-    }
-
     private func subscribeForNotifications() {
         subscriptionToken = notificationCenter.addObserver(
             forName: UIApplication.didBecomeActiveNotification,

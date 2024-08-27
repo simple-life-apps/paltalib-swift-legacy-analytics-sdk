@@ -19,19 +19,6 @@ final class TrackingOptionsProviderImpl: TrackingOptionsProvider {
         return effectiveTrackingOptions
     }
     
-    var coppaControlEnabled: Bool {
-        get {
-            lock.lock()
-            defer { lock.unlock() }
-            return _coppaControlEnabled
-        }
-        set {
-            lock.lock()
-            _coppaControlEnabled = newValue
-            lock.unlock()
-        }
-    }
-
     private var _coppaControlEnabled = false {
         didSet {
             updateEffectiveTrackingOptions()

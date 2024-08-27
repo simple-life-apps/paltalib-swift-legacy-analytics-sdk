@@ -29,8 +29,6 @@ public final class PaltaAnalytics {
     
     private let lock = NSRecursiveLock()
 
-    private(set) var targets = [Target]()
-    
     private var defaultAmplitudeInstance: Amplitude? = Amplitude
         .instance(withName: ConfigTarget.defaultAmplitude.name.rawValue)
         .do {
@@ -58,7 +56,6 @@ public final class PaltaAnalytics {
     }
 
     public func configure(
-        name: String,
         amplitudeAPIKey: String? = nil,
         paltaAPIKey: String? = nil,
         host: URL?
@@ -118,70 +115,11 @@ public final class PaltaAnalytics {
         lock.unlock()
     }
 
-    public func setOffline(_ offline: Bool) {
-        amplitudeInstances.forEach {
-            $0.setOffline(offline)
-        }
-
-        paltaQueueAssemblies.forEach {
-            $0.eventQueueCore.isPaused = offline
-            $0.liveEventQueueCore.isPaused = offline
-        }
-    }
-    
-    public func useAdvertisingIdForDeviceId() {
-        amplitudeInstances.forEach {
-            $0.useAdvertisingIdForDeviceId()
-        }
-
-        assembly.analyticsCoreAssembly.userPropertiesKeeper.useIDFAasDeviceId = true
-    }
-
     public func setTrackingOptions(_ options: AMPTrackingOptions) {
         amplitudeInstances.forEach {
             $0.setTrackingOptions(options)
         }
 
         assembly.analyticsCoreAssembly.trackingOptionsProvider.setTrackingOptions(options)
-    }
-
-    public func enableCoppaControl() {
-        amplitudeInstances.forEach {
-            $0.enableCoppaControl()
-        }
-
-        assembly.analyticsCoreAssembly.trackingOptionsProvider.coppaControlEnabled = true
-    }
-    
-    public func disableCoppaControl() {
-        amplitudeInstances.forEach {
-            $0.disableCoppaControl()
-        }
-
-        assembly.analyticsCoreAssembly.trackingOptionsProvider.coppaControlEnabled = false
-    }
-    
-    public func getDeviceId() -> String? {
-        assembly.analyticsCoreAssembly.userPropertiesKeeper.deviceId
-    }
-    
-    public func regenerateDeviceId() {
-        assembly.analyticsCoreAssembly.userPropertiesKeeper.generateDeviceId(forced: true)
-
-        amplitudeInstances.forEach {
-            $0.setDeviceId(assembly.analyticsCoreAssembly.userPropertiesKeeper.deviceId ?? "")
-        }
-    }
-    
-    public func getSessionId() -> Int64? {
-        Int64(assembly.analyticsCoreAssembly.sessionManager.sessionId)
-    }
-    
-    public func setSessionId(_ timestamp: Int64) {
-        amplitudeInstances.forEach {
-            $0.setSessionId(timestamp)
-        }
-
-        assembly.analyticsCoreAssembly.sessionManager.setSessionId(Int(timestamp))
     }
 }
