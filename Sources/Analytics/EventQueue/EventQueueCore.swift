@@ -33,8 +33,6 @@ final class EventQueueCoreImpl: EventQueueCore, FunctionalExtension {
     var sendHandler: UploadHandler?
     var removeHandler: RemoveHandler?
 
-    var isPaused = false
-    
     private(set) var config: EventQueueConfig? {
         didSet {
             onNewEvents()
@@ -95,12 +93,6 @@ final class EventQueueCoreImpl: EventQueueCore, FunctionalExtension {
             flush()
         }
     }
-    
-    #if DEBUG
-    func addBarrier(_ block: @escaping () -> Void) {
-        workingQueue.async(flags: .barrier, execute: block)
-    }
-    #endif
 
     private func insert(_ event: Event) {
         let index = events.lastIndex(where: { $0.timestamp > event.timestamp }) ?? 0

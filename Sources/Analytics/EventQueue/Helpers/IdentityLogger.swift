@@ -6,11 +6,9 @@
 //
 
 import Foundation
-import Amplitude
 
 final class IdentityLogger {
     private let identifyEventType = "$identify"
-    private let groupIdentifyEventType = "$groupidentify"
 
     private let eventQueue: EventQueue
 
@@ -18,76 +16,12 @@ final class IdentityLogger {
         self.eventQueue = eventQueue
     }
 
-    func identify(
-        _ identify: AMPIdentify
-    ) {
-        guard let userProperties = identify.userPropertyOperations as? [String: Any] else {
-            assertionFailure()
-            return
-        }
-
+    func setUserProperties(_ userProperties: [String: Any]) {
         eventQueue.logEvent(
             eventType: identifyEventType,
             eventProperties: [:],
             apiProperties: [:],
             groups: [:],
-            userProperties: userProperties,
-            groupProperties: [:],
-            timestamp: nil
-        )
-    }
-
-    func groupIdentify(
-        groupType: String,
-        groupName: NSObject,
-        groupIdentify: AMPIdentify
-    ) {
-        guard
-            let groupProperties = groupIdentify.userPropertyOperations as? [String: Any],
-            !groupType.isEmpty
-        else {
-            assertionFailure()
-            return
-        }
-
-        eventQueue.logEvent(
-            eventType: groupIdentifyEventType,
-            eventProperties: [:],
-            apiProperties: [:],
-            groups: [groupType: groupName],
-            userProperties: [:],
-            groupProperties: groupProperties,
-            timestamp: nil
-        )
-    }
-
-    func setUserProperties(_ userProperties: [String: Any]) {
-        let identifyObject = AMPIdentify()
-
-        userProperties.forEach {
-            identifyObject.set($0.key, value: $0.value as? NSObject)
-        }
-
-        identify(identifyObject)
-    }
-
-    func clearUserProperties() {
-        identify(AMPIdentify().clearAll())
-    }
-
-    func setGroup(groupType: String, groupName: NSObject) {
-        guard
-            let userProperties = AMPIdentify().set(groupType, value: groupName).userPropertyOperations as? [String: Any]
-        else {
-            assertionFailure()
-            return
-        }
-
-        eventQueue.logEvent(
-            eventType: identifyEventType,
-            eventProperties: [:],
-            apiProperties: [:],
-            groups: [groupType: groupName],
             userProperties: userProperties,
             groupProperties: [:],
             timestamp: nil

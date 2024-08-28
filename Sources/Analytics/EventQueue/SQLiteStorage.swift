@@ -9,14 +9,6 @@ import Foundation
 import SQLite3
 import PaltaCore
 
-enum SQliteError: Error {
-    case databaseCantBeOpen
-    case statementPreparationFailed
-    case stepExecutionFailed
-    case dataExctractionFailed
-    case queryFailed
-}
-
 final class SQLiteStorage {
     private let encoder: JSONEncoder = JSONEncoder().do {
         $0.dateEncodingStrategy = .custom { date, encoder in
