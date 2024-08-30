@@ -18,16 +18,19 @@ final class DeviceInfoProviderTests: XCTestCase {
     }
 
     func testCountry() {
-        XCTAssertEqual(infoProvider.country, "CY")
+        XCTAssertEqual(infoProvider.country, Locale.current.regionCode)
     }
 
     func testLanguage() {
-        XCTAssertEqual(infoProvider.language, "el")
+        XCTAssertEqual(infoProvider.language, Locale.current.languageCode)
     }
 
     func testDevice() {
-        // Run on simulator only!
+        #if targetEnvironment(simulator)
+        XCTAssertEqual(infoProvider.deviceModel, "iPhone Simulator")
+        #else
         XCTAssertEqual(infoProvider.deviceModel, "iPhone")
+        #endif
     }
 
     func testNoCarrier() {

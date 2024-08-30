@@ -5,7 +5,7 @@
 //  Created by Vyacheslav Beltyukov on 14.04.2022.
 //
 
-import Amplitude
+import Foundation
 @testable import PaltaLibAnalytics
 
 final class TrackingOptionsProviderMock: TrackingOptionsProvider {

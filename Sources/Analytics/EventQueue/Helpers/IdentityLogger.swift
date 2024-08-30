@@ -22,7 +22,7 @@ final class IdentityLogger {
             eventProperties: [:],
             apiProperties: [:],
             groups: [:],
-            userProperties: userProperties,
+            userProperties: ["$set": userProperties],
             groupProperties: [:],
             timestamp: nil
         )

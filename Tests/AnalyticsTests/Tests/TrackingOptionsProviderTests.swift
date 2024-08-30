@@ -6,14 +6,11 @@
 //
 
 import XCTest
-import Amplitude
 @testable import PaltaLibAnalytics
 
 final class TrackingOptionsProviderTests: XCTestCase {
-    func testCoppaOn1() {
+    func testInitial() {
         let provider = TrackingOptionsProviderImpl()
-
-        provider.coppaControlEnabled = true
 
         XCTAssertTrue(provider.trackingOptions.shouldTrackCarrier())
         XCTAssertTrue(provider.trackingOptions.shouldTrackCountry())
@@ -25,25 +22,18 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackLatLng())
+        XCTAssertTrue(provider.trackingOptions.shouldTrackIDFA())
+        XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
     }
 
-    func testCoppaOn2() {
+    func testNoIDFA() {
         let provider = TrackingOptionsProviderImpl()
 
         provider.setTrackingOptions(
             AMPTrackingOptions()
-                .disableIPAddress()
-                .disableCity()
                 .disableIDFA()
         )
 
-        provider.coppaControlEnabled = true
-
         XCTAssertTrue(provider.trackingOptions.shouldTrackCarrier())
         XCTAssertTrue(provider.trackingOptions.shouldTrackCountry())
         XCTAssertTrue(provider.trackingOptions.shouldTrackLanguage())
@@ -54,17 +44,12 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
         XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackLatLng())
+        XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
     }
 
-    func testCoppaOn3() {
+    func testInitialConfigured() {
         let provider = TrackingOptionsProviderImpl()
-
-        provider.coppaControlEnabled = true
 
         provider.setTrackingOptions(
             AMPTrackingOptions()
@@ -80,11 +65,8 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackLatLng())
+        XCTAssertTrue(provider.trackingOptions.shouldTrackIDFA())
+        XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
     }
 
     func testCoppaOff1() {
@@ -92,12 +74,8 @@ final class TrackingOptionsProviderTests: XCTestCase {
 
         provider.setTrackingOptions(
             AMPTrackingOptions()
-                .disableIPAddress()
-                .disableCity()
                 .disableIDFA()
         )
-
-        provider.coppaControlEnabled = false
 
         XCTAssertTrue(provider.trackingOptions.shouldTrackCarrier())
         XCTAssertTrue(provider.trackingOptions.shouldTrackCountry())
@@ -109,26 +87,17 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
         XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
         XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertTrue(provider.trackingOptions.shouldTrackLatLng())
     }
 
     func testCoppaOnOff1() {
         let provider = TrackingOptionsProviderImpl()
 
-        provider.coppaControlEnabled = true
-
         provider.setTrackingOptions(
             AMPTrackingOptions()
-                .disableIPAddress()
-                .disableCity()
                 .disableIDFA()
         )
-
-        provider.coppaControlEnabled = false
 
         XCTAssertTrue(provider.trackingOptions.shouldTrackCarrier())
         XCTAssertTrue(provider.trackingOptions.shouldTrackCountry())
@@ -140,11 +109,8 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
         XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
         XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertTrue(provider.trackingOptions.shouldTrackLatLng())
     }
 
     func testCoppaOnOff2() {
@@ -152,13 +118,8 @@ final class TrackingOptionsProviderTests: XCTestCase {
 
         provider.setTrackingOptions(
             AMPTrackingOptions()
-                .disableIPAddress()
-                .disableCity()
                 .disableIDFA()
         )
-
-        provider.coppaControlEnabled = true
-        provider.coppaControlEnabled = false
 
         XCTAssertTrue(provider.trackingOptions.shouldTrackCarrier())
         XCTAssertTrue(provider.trackingOptions.shouldTrackCountry())
@@ -170,10 +131,7 @@ final class TrackingOptionsProviderTests: XCTestCase {
         XCTAssertTrue(provider.trackingOptions.shouldTrackDeviceManufacturer())
         XCTAssertTrue(provider.trackingOptions.shouldTrackOSVersion())
 
-        XCTAssertFalse(provider.trackingOptions.shouldTrackCity())
-        XCTAssertFalse(provider.trackingOptions.shouldTrackIPAddress())
         XCTAssertFalse(provider.trackingOptions.shouldTrackIDFA())
         XCTAssertTrue(provider.trackingOptions.shouldTrackIDFV())
-        XCTAssertTrue(provider.trackingOptions.shouldTrackLatLng())
     }
 }

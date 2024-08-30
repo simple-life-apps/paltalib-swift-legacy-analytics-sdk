@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import Amplitude
 import PaltaCore
 @testable import PaltaLibAnalytics
 

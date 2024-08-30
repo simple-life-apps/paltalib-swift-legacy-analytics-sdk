@@ -7,7 +7,6 @@
 
 import XCTest
 import Foundation
-import Amplitude
 @testable import PaltaLibAnalytics
 
 final class SessionManagerTests: XCTestCase {
@@ -92,35 +91,6 @@ final class SessionManagerTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         wait(for: [newSessionLogged], timeout: 0.05)
-    }
-
-    func testCreateNewSession() {
-        Int.timestampMock = 10000
-        let lastSessionTimestamp = Int.currentTimestamp() - 1000
-        var session = Session(id: 22)
-        session.lastEventTimestamp = lastSessionTimestamp
-        userDefaults.set(try! JSONEncoder().encode(session), forKey: "paltaBrainSession")
-        sessionManager.start()
-
-        let sessionEventLogged = expectation(description: "New session logged")
-        sessionEventLogged.expectedFulfillmentCount = 2
-
-        var eventNames: [String] = []
-        var eventTimes: [Int] = []
-
-        sessionManager.sessionEventLogger = {
-            eventNames.append($0)
-            eventTimes.append($1)
-            sessionEventLogged.fulfill()
-        }
-
-        sessionManager.startNewSession()
-
-        wait(for: [sessionEventLogged], timeout: 0.05)
-
-        XCTAssertEqual(eventNames, [kAMPSessionEndEvent, kAMPSessionStartEvent])
-        XCTAssertEqual(eventTimes[0], lastSessionTimestamp)
-        XCTAssert(abs(Int.currentTimestamp() - eventTimes[1]) < 4)
     }
 
     func testRefreshSessionValid() throws {
