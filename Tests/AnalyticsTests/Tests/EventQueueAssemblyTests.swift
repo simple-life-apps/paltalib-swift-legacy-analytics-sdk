@@ -24,7 +24,7 @@ final class EventQueueAssemblyTests: XCTestCase {
     
     func testApplyTarget() {
         let target = ConfigTarget(
-            name: .amplitude,
+            name: .paltabrain,
             settings: ConfigSettings(
                 eventUploadThreshold: 98,
                 eventUploadMaxBatchSize: 234,
