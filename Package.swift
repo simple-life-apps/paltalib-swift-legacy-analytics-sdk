@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/simple-life-apps/paltalib-swift-core.git",
-            from: "3.2.2"
+            from: "3.2.3"
         ),
         .package(
             url: "https://github.com/krzysztofzablocki/Difference.git",
