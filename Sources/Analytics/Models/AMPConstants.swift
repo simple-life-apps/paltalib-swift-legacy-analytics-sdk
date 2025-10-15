@@ -12,6 +12,3 @@ let AMP_TRACKING_OPTION_OS_NAME = "os_name"
 let AMP_TRACKING_OPTION_OS_VERSION = "os_version"
 let AMP_TRACKING_OPTION_PLATFORM = "platform"
 let AMP_TRACKING_OPTION_VERSION_NAME = "version_name"
-
-// MARK: - Events
-let kAMPSessionStartEvent = "session_start"

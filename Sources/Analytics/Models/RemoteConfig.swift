@@ -21,7 +21,6 @@ struct ConfigTarget: Codable, Equatable {
             eventMaxCount: 1000,
             eventUploadPeriodSeconds: 30,
             minTimeBetweenSessionsMillis: 300000,
-            trackingSessionEvents: true,
             realtimeEventTypes: [],
             excludedEventTypes: [],
             sendMechanism: .paltaBrain
@@ -42,7 +41,6 @@ struct ConfigSettings: Codable, Equatable {
     let eventMaxCount: Int
     let eventUploadPeriodSeconds: Int
     let minTimeBetweenSessionsMillis: Int
-    let trackingSessionEvents: Bool
     let realtimeEventTypes: Set<String>
     let excludedEventTypes: Set<String>
     let sendMechanism: SendMechanism?
@@ -56,7 +54,6 @@ extension ConfigSettings {
         case eventMaxCount
         case eventUploadPeriodSeconds
         case minTimeBetweenSessionsMillis
-        case trackingSessionEvents
         case realtimeEventTypes
         case excludedEventTypes
     }

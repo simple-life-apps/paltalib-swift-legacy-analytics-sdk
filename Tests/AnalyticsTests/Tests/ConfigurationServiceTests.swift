@@ -36,7 +36,6 @@ final class ConfigurationServiceTests: XCTestCase {
                             eventMaxCount: 1228,
                             eventUploadPeriodSeconds: 4429,
                             minTimeBetweenSessionsMillis: 4393,
-                            trackingSessionEvents: false,
                             realtimeEventTypes: [],
                                         excludedEventTypes: [],
                             sendMechanism: .paltaBrain
@@ -81,7 +80,6 @@ final class ConfigurationServiceTests: XCTestCase {
                         eventMaxCount: 1228,
                         eventUploadPeriodSeconds: 4429,
                         minTimeBetweenSessionsMillis: 4393,
-                        trackingSessionEvents: false,
                         realtimeEventTypes: [],
                         excludedEventTypes: [],
                         sendMechanism: .paltaBrain
@@ -158,7 +156,6 @@ final class ConfigurationServiceTests: XCTestCase {
                         eventMaxCount: 434,
                         eventUploadPeriodSeconds: 0,
                         minTimeBetweenSessionsMillis: 678,
-                        trackingSessionEvents: true,
                         realtimeEventTypes: [],
                         excludedEventTypes: [],
                         sendMechanism: .paltaBrain
