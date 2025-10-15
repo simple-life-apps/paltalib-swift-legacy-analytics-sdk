@@ -26,7 +26,6 @@ extension EventQueueAssembly {
         eventQueueCore.apply(normalConfig)
         liveEventQueueCore.apply(liveConfig)
 
-        eventQueue.trackingSessionEvents = target.settings.trackingSessionEvents
         eventQueue.liveEventTypes = target.settings.realtimeEventTypes
         eventQueue.excludedEvents = target.settings.excludedEventTypes
         

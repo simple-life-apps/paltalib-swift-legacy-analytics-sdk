@@ -20,7 +20,6 @@ protocol EventQueue {
 }
 
 final class EventQueueImpl: EventQueue {
-    var trackingSessionEvents = true
     var liveEventTypes: Set<String> = []
     var excludedEvents: Set<String> = []
 
@@ -149,23 +148,7 @@ final class EventQueueImpl: EventQueue {
     }
 
     private func startSessionManager() {
-        sessionManager.sessionEventLogger = { [weak self] eventName, timestamp in
-            guard let self = self, self.trackingSessionEvents else {
-                return
-            }
-            
-            self.doLogEvent(
-                eventType: eventName,
-                eventProperties: [:],
-                apiProperties: ["special": eventName],
-                groups: [:],
-                userProperties: [:],
-                groupProperties: [:],
-                timestamp: timestamp,
-                sessionId: timestamp
-            )
-        }
-
+        sessionManager.sessionEventLogger = nil
         sessionManager.start()
     }
     

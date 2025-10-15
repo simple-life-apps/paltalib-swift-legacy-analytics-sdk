@@ -69,7 +69,6 @@ final class ConfigApplyServiceTests: XCTestCase {
                     eventMaxCount: 1,
                     eventUploadPeriodSeconds: 1,
                     minTimeBetweenSessionsMillis: 1,
-                    trackingSessionEvents: true,
                     realtimeEventTypes: [],
                     excludedEventTypes: [],
                     sendMechanism: .paltaBrain

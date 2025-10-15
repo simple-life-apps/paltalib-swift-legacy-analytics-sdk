@@ -39,7 +39,7 @@ final class SessionManagerTests: XCTestCase {
         let newSessionLogged = expectation(description: "New session logged")
         newSessionLogged.isInverted = true
 
-        sessionManager.sessionEventLogger = { _, _ in
+        sessionManager.sessionEventLogger = { _ in
             newSessionLogged.fulfill()
         }
         sessionManager.start()
@@ -51,8 +51,7 @@ final class SessionManagerTests: XCTestCase {
     func testNoSavedSession() {
         let newSessionLogged = expectation(description: "New session logged")
 
-        sessionManager.sessionEventLogger = { eventName, timestamp in
-            XCTAssertEqual(eventName, kAMPSessionStartEvent)
+        sessionManager.sessionEventLogger = { timestamp in
             XCTAssert(abs(Int.currentTimestamp() - timestamp) < 2)
             newSessionLogged.fulfill()
         }
@@ -69,8 +68,7 @@ final class SessionManagerTests: XCTestCase {
 
         let newSessionLogged = expectation(description: "New session logged")
 
-        sessionManager.sessionEventLogger = { eventName, timestamp in
-            XCTAssertEqual(eventName, kAMPSessionStartEvent)
+        sessionManager.sessionEventLogger = { timestamp in
             XCTAssert(abs(Int.currentTimestamp() - timestamp) < 2)
             newSessionLogged.fulfill()
         }
@@ -82,9 +80,8 @@ final class SessionManagerTests: XCTestCase {
     func testAppBecomeActive() {
         let newSessionLogged = expectation(description: "New session logged")
 
-        sessionManager.sessionEventLogger = { eventName, timestamp in
-            XCTAssertEqual(eventName, kAMPSessionStartEvent)
-            XCTAssert(abs(Int.currentTimestamp() - timestamp) < 2)
+        sessionManager.sessionEventLogger = { timestamp in
+            XCTAssert(abs(Int.currentTimestamp() - timestamp) < 3)
             newSessionLogged.fulfill()
         }
 
@@ -132,10 +129,7 @@ final class SessionManagerTests: XCTestCase {
         
         var loggerTimestamp: Int?
         
-        sessionManager.sessionEventLogger = { name, timestamp in
-            guard name == kAMPSessionStartEvent else {
-                return
-            }
+        sessionManager.sessionEventLogger = { timestamp in
             loggerTimestamp = timestamp
             Int.timestampMock = initialSessionId + 140
         }

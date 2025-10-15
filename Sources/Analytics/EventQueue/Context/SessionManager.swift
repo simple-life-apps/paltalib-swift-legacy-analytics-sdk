@@ -13,7 +13,7 @@ protocol SessionIdProvider {
 }
 
 protocol SessionManager: AnyObject {
-    var sessionEventLogger: ((String, Int) -> Void)? { get set }
+    var sessionEventLogger: ((Int) -> Void)? { get set }
 
     func refreshSession(with timestamp: Int)
     func start()
@@ -33,7 +33,7 @@ final class SessionManagerImpl: SessionManager, SessionIdProvider {
         }
     }
 
-    var sessionEventLogger: ((String, Int) -> Void)?
+    var sessionEventLogger: ((Int) -> Void)?
 
     private var session: Session {
         get {
@@ -122,7 +122,7 @@ final class SessionManagerImpl: SessionManager, SessionIdProvider {
             let timestamp = Int.currentTimestamp()
             let session = Session(id: timestamp)
             self.session = session
-            sessionEventLogger?(kAMPSessionStartEvent, timestamp)
+            sessionEventLogger?(timestamp)
             return session
         }
     }

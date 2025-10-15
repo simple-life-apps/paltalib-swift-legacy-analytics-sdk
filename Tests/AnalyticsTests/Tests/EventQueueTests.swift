@@ -101,24 +101,6 @@ final class EventQueueTests: XCTestCase {
         XCTAssertEqual(storageMock.removedEvents, eventsToRemove)
     }
 
-    func testSessionEvent() {
-        sessionManagerMock.sessionEventLogger?("some event", 234)
-
-        XCTAssertEqual(composerMock.eventType, "some event")
-        XCTAssertEqual(composerMock.timestamp, 234)
-        XCTAssertEqual(composerMock.apiProperties as? [String: String], ["special": "some event"])
-        XCTAssertEqual(composerMock.userProperties?.isEmpty, true)
-        XCTAssertEqual(composerMock.eventProperties?.isEmpty, true)
-        XCTAssertEqual(composerMock.groups?.isEmpty, true)
-        XCTAssertEqual(composerMock.groupProperties?.isEmpty, true)
-
-        XCTAssertEqual(coreMock.addedEvents.count, 1)
-        XCTAssertEqual(storageMock.addedEvents.count, 1)
-
-        XCTAssert(storageMock.removedEvents.isEmpty)
-        XCTAssert(liveCoreMock.addedEvents.isEmpty)
-    }
-    
     func testSendWhenAvailable() {
         let events: [Event] = .mock(count: 1)
         let telemetry: Telemetry = .mock()

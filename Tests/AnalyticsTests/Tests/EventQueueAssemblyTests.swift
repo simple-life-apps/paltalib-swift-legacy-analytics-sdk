@@ -31,7 +31,6 @@ final class EventQueueAssemblyTests: XCTestCase {
                 eventMaxCount: 12,
                 eventUploadPeriodSeconds: 15,
                 minTimeBetweenSessionsMillis: 87,
-                trackingSessionEvents: true,
                 realtimeEventTypes: ["real-time"],
                 excludedEventTypes: ["excluded-event"],
                 sendMechanism: .paltaBrain
@@ -49,7 +48,6 @@ final class EventQueueAssemblyTests: XCTestCase {
         XCTAssertEqual(assembly.eventQueueCore.config?.maxEvents, 12)
         XCTAssertEqual(assembly.eventQueueCore.config?.uploadInterval, 15)
         XCTAssertEqual(assembly.sessionManager.maxSessionAge, 87)
-        XCTAssertEqual(assembly.eventQueue.trackingSessionEvents, true)
         XCTAssertEqual(assembly.eventQueue.excludedEvents, ["excluded-event"])
         XCTAssertEqual(assembly.eventQueue.liveEventTypes, ["real-time"])
         
